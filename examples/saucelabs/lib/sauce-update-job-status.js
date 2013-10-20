@@ -32,11 +32,15 @@ module.exports = function(script_for_sauce_data_schemas, callback) {
       if (data.passed) console.log("ok");
       else console.log("not ok");
 
-      api(data).then( function(body) {
+      api(data)
+      .then( function(body) {
         obj.body = body;
         console.warn("Check out test results at http://saucelabs.com/jobs/" + browser.sessionID + "\n");
         callback(null, obj);
+      }, function(err) {
+        callback(err);
       });
+
     }
   ], function(err, result) {
     callback(err, result);

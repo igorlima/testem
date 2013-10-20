@@ -13,8 +13,9 @@ module.exports = function (data) {
     uri: ["https://", auth.username, ":", auth.accessKey, "@saucelabs.com/rest", url].join(""),
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(data)
-  }, function (error, response, body) {
-    deferred.resolve(response.body);
+  }, function (err, response, body) {
+    if (err) deferred.reject( new Error(err) );
+    else deferred.resolve(response.body);
   });
   return deferred.promise;
 };
