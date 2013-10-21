@@ -19,18 +19,39 @@ var webdriver   = require('wd'),
         'alias':    'v',
         'default':  '',
         'describe': 'Define the browser version'
-      }).options('platformSL', {
+      })
+      .options('platformSL', {
         'alias':    'p',
         'default':  'Linux',
         'describe': "Define the platform to run the tests, e.g: 'Linux', 'Windows 7', 'Windows XP', 'OS X 10.6'"
+      })
+      .options('tunnelIdentifierSL', {
+        'alias':    't',
+        'default':  process.env.TRAVIS_JOB_NUMBER || libraryName,
+        'describe': 'Define a tunnel name'
+      })
+      .options('buildSL', {
+        'alias':    'build',
+        'default':  process.env.TRAVIS_BUILD_NUMBER || "dev-tests",
+        'describe': 'Define the build name/number'
+      })
+      .options('tagsSL', {
+        'alias':    'tg',
+        'default':  [libraryName, "test"],
+        'describe': 'Define tag names'
+      })
+      .options('sessionNameSL', {
+        'alias':    'n',
+        'default':  libraryName + " tests",
+        'describe': 'Define the session name on SauceLabs'
       })
       .argv,
 
     auth        = exports.auth = {
       username:  process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
-      build:     process.env.TRAVIS_BUILD_NUMBER || "dev-tests",
-      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER || libraryName
+      build:     argv.buildSL,
+      tunnelIdentifier: argv.tunnelIdentifierSL
     },
 
     host = "ondemand.saucelabs.com",
@@ -41,8 +62,8 @@ var webdriver   = require('wd'),
       "browserName": argv.browserNameSL,
       "version"    : argv.versionSL,
       "platform"   : argv.platformSL,
-      "tags"       : [libraryName, "test"],
-      "name"       : libraryName + " tests",
+      "tags"       : argv.tagsSL,
+      "name"       : argv.sessionNameSL,
       "public"     : "public",
       "build"      : auth.build,
       "tunnel-identifier": auth.tunnelIdentifier,
