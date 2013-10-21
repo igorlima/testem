@@ -1,6 +1,28 @@
 var webdriver   = require('wd'),
     async       = require('async'),
-    argv        = require('optimist').argv,
+    optimist    = require('optimist'),
+    argv        = optimist
+      .usage('A js test running using Sauce Labs. Supports Mocha, Qunit and Jasmine tests')
+      .options('h', {
+        'alias':    'help',
+        'describe': 'Display the usage'
+      })
+      .options('b', {
+        'alias':    'browserNameSL',
+        'default':  'chrome',
+        'describe': "Define the browser, e.g.: 'internet explorer', 'firefox', 'chrome'"
+      })
+      .options('v', {
+        'alias':    'versionSL',
+        'default':  '',
+        'describe': 'Define the browser version'
+      }).options('p', {
+        'alias':    'platformSL',
+        'default':  'Linux',
+        'describe': "Define the platform to run the tests, e.g: 'Linux', 'Windows 7', 'Windows XP', 'OS X 10.6'"
+      })
+      .argv,
+
     exports     = module.exports = {},
     libraryName = exports.libraryName = "Testem",
     auth        = exports.auth = {
@@ -15,9 +37,9 @@ var webdriver   = require('wd'),
     browser = exports.browser = webdriver.remote(host, port, auth.username, auth.accessKey),
 
     desired = exports.desired = {
-      "browserName": argv.browserNameSL || "chrome",
-      "version"    : argv.versionSL     || "",
-      "platform"   : argv.platformSL    || "Linux",
+      "browserName": argv.browserNameSL,
+      "version"    : argv.versionSL,
+      "platform"   : argv.platformSL,
       "tags"       : [libraryName, "test"],
       "name"       : libraryName + " tests",
       "public"     : "public",
@@ -36,6 +58,10 @@ var webdriver   = require('wd'),
       no_progress: false // optionally hide progress bar
     };
 
+if (argv.help) {
+  optimist.showHelp();
+  process.exit(0);
+}
 
 browser.on("status", function(info) {
   //console.log("\x1b[36m%s\x1b[0m", info);
