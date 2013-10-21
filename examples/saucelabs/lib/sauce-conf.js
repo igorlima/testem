@@ -1,30 +1,31 @@
 var webdriver   = require('wd'),
     async       = require('async'),
     optimist    = require('optimist'),
-    argv        = optimist
+
+    exports     = module.exports = {},
+    libraryName = exports.libraryName = "Testem",
+    argv        = exports.argv = optimist
       .usage('A js test running using Sauce Labs. Supports Mocha, Qunit and Jasmine tests')
-      .options('h', {
-        'alias':    'help',
+      .options('help', {
+        'alias':    'h',
         'describe': 'Display the usage'
       })
-      .options('b', {
-        'alias':    'browserNameSL',
+      .options('browserNameSL', {
+        'alias':    'b',
         'default':  'chrome',
         'describe': "Define the browser, e.g.: 'internet explorer', 'firefox', 'chrome'"
       })
-      .options('v', {
-        'alias':    'versionSL',
+      .options('versionSL', {
+        'alias':    'v',
         'default':  '',
         'describe': 'Define the browser version'
-      }).options('p', {
-        'alias':    'platformSL',
+      }).options('platformSL', {
+        'alias':    'p',
         'default':  'Linux',
         'describe': "Define the platform to run the tests, e.g: 'Linux', 'Windows 7', 'Windows XP', 'OS X 10.6'"
       })
       .argv,
 
-    exports     = module.exports = {},
-    libraryName = exports.libraryName = "Testem",
     auth        = exports.auth = {
       username:  process.env.SAUCE_USERNAME,
       accessKey: process.env.SAUCE_ACCESS_KEY,
